@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import * as Speech from "expo-speech";
+import { Ionicons } from "@expo/vector-icons";
 import { languages } from "../constants/languages";
 
 export default function TranslateScreen() {
@@ -50,6 +51,16 @@ export default function TranslateScreen() {
     } else {
       console.warn("No translated text to speak!");
     }
+  };
+
+  // Function to swap input and target languages
+  const swapLanguages = () => {
+    const temp = inputLanguage;
+    setInputLanguage(targetLanguage);
+    setTargetLanguage(temp);
+    const tempInputText = inputText;
+    setInputText(translatedText);
+    setTranslatedText(tempInputText);
   };
 
   return (
@@ -94,6 +105,12 @@ export default function TranslateScreen() {
               textStyle={styles.dropdownText}
             />
           </View>
+
+          {/* Swap Button */}
+          <TouchableOpacity style={styles.swapButton} onPress={swapLanguages}>
+            <Ionicons name="swap-horizontal" size={24} color="#ffffff" />
+          </TouchableOpacity>
+
           <View style={styles.dropdownWrapper}>
             <DropDownPicker
               open={openTargetDropdown}
@@ -125,7 +142,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     borderRadius: 10,
     marginBottom: 20,
-    marginTop: 20,
   },
   divider: {
     height: 1,
@@ -146,7 +162,6 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     alignItems: "center",
     marginTop: 10,
-    zIndex: 1,
   },
   buttonText: {
     color: "#ffffff",
@@ -155,11 +170,23 @@ const styles = StyleSheet.create({
   languageContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "center",
     marginTop: "auto", // Push to bottom
     marginBottom: 30,
   },
   dropdownWrapper: {
+    flex: 4,
+  },
+  swapButton: {
     flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#1f1f1f",
+    borderRadius: 50,
+    height: 50,
+    marginRight: 10,
+    width: 50,
+    elevation: 3,
   },
   dropdownStyle: {
     backgroundColor: "#1f1f1f",
