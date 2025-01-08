@@ -29,3 +29,11 @@ Choose from over 30 supported languages using a simple and user-friendly dropdow
 - **Google Translate API**: Providing high-quality language translations.  
 - **React Native Animations**: Enhancing UI/UX with smooth animations.  
 
+
+## Demo
+
+<img src="https://github.com/user-attachments/assets/ba4addea-df8b-4ade-acbf-73b3c68ed5de" alt="App Screenshot" width="300">
+
+[Watch the Demo Video](https://github.com/user-attachments/assets/430ea663-64f8-48d4-9727-28c69a2d4208)
+
+
