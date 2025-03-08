@@ -12,6 +12,7 @@ import DropDownPicker from "react-native-dropdown-picker";
 import * as Speech from "expo-speech";
 import { Ionicons } from "@expo/vector-icons";
 import { languages } from "../constants/languages";
+import { franc } from "franc";
 
 export default function TranslateScreen() {
   const [inputText, setInputText] = useState("");
@@ -20,6 +21,42 @@ export default function TranslateScreen() {
   const [inputLanguage, setInputLanguage] = useState("auto");
   const [openInputDropdown, setOpenInputDropdown] = useState(false);
   const [openTargetDropdown, setOpenTargetDropdown] = useState(false);
+  const [detectedLanguage, setDetectedLanguage] = useState(null);
+
+  // Function to detect language
+  const detectLanguage = (text) => {
+    if (text.trim().length < 10) {
+      // franc needs at least 10 characters for reliable detection
+      return;
+    }
+
+    // Detect language using franc
+    const langCode = franc(text);
+
+    // Check if detection was successful (not 'und' which means undetermined)
+    if (langCode !== "und") {
+      // Find the language in our languages array
+      const languageExists = languages.some((lang) => lang.value === langCode);
+
+      if (languageExists) {
+        setDetectedLanguage(langCode);
+        // Only update input language if it's still set to auto
+        if (inputLanguage === "auto") {
+          setInputLanguage(langCode);
+        }
+      }
+    }
+  };
+
+  // Handle text input changes
+  const handleTextChange = (text) => {
+    setInputText(text);
+
+    // Detect language when user types
+    if (text.trim().length >= 10) {
+      detectLanguage(text);
+    }
+  };
 
   // Dynamic Translation
   useEffect(() => {
@@ -29,7 +66,11 @@ export default function TranslateScreen() {
         return;
       }
 
-      const apiUrl = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${inputLanguage}&tl=${targetLanguage}&dt=t&q=${encodeURIComponent(
+      // Use detected language or selected language
+      const sourceLanguage =
+        inputLanguage === "auto" ? detectedLanguage || "auto" : inputLanguage;
+
+      const apiUrl = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLanguage}&tl=${targetLanguage}&dt=t&q=${encodeURIComponent(
         inputText
       )}`;
 
@@ -43,7 +84,7 @@ export default function TranslateScreen() {
     };
 
     fetchTranslation();
-  }, [inputText, inputLanguage, targetLanguage]);
+  }, [inputText, inputLanguage, targetLanguage, detectedLanguage]);
 
   const speakText = () => {
     if (translatedText) {
@@ -55,12 +96,15 @@ export default function TranslateScreen() {
 
   // Function to swap input and target languages
   const swapLanguages = () => {
-    const temp = inputLanguage;
+    // Don't swap if input language is auto
+    const temp = inputLanguage === "auto" ? targetLanguage : inputLanguage;
     setInputLanguage(targetLanguage);
     setTargetLanguage(temp);
     const tempInputText = inputText;
     setInputText(translatedText);
     setTranslatedText(tempInputText);
+    // Reset detected language when swapping
+    setDetectedLanguage(null);
   };
 
   return (
@@ -72,8 +116,17 @@ export default function TranslateScreen() {
           placeholder="Type text here..."
           value={inputText}
           multiline={true}
-          onChangeText={setInputText}
+          onChangeText={handleTextChange}
         />
+
+        {/* Language Detection Indicator */}
+        {detectedLanguage && inputLanguage === "auto" && (
+          <Text style={styles.detectedLanguageText}>
+            Detected:{" "}
+            {languages.find((lang) => lang.value === detectedLanguage)?.label ||
+              detectedLanguage}
+          </Text>
+        )}
 
         {/* Divider */}
         {translatedText !== "" && <View style={styles.divider} />}
@@ -201,5 +254,12 @@ const styles = StyleSheet.create({
   dropdownText: {
     color: "#ffffff",
     fontSize: 14,
+  },
+  detectedLanguageText: {
+    color: "#4caf50",
+    fontSize: 12,
+    marginTop: -15,
+    marginBottom: 15,
+    fontStyle: "italic",
   },
 });

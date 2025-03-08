@@ -1,28 +1,46 @@
 {
   "expo": {
     "name": "Verbo",
-    "slug": "Verbo",
+    "slug": "verbo",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./images/logo.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./images/logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.mattbarhou.verbo",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./images/logo.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.mattbarhou.verbo"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./images/logo.png"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/f39323a7-adad-4484-9c6b-d342fbf49733",
+      "fallbackToCacheTimeout": 0
+    },
+    "extra": {
+      "eas": {
+        "projectId": "f39323a7-adad-4484-9c6b-d342fbf49733"
+      }
+    },
+    "owner": "mattbarhou",
+    "runtimeVersion": {
+      "policy": "appVersion"
     }
   }
 }
